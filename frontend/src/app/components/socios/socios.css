@@ -1,0 +1,42 @@
+.card-dashboard {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--turq-primary);
+}
+
+.table tbody td {
+    vertical-align: middle;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.btn-action {
+    background-color: var(--turq-primary);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    background-color: var(--turq-dark);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    color: var(--turq-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--turq-bg);
+    color: var(--turq-dark);
+}

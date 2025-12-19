@@ -1,27 +1,59 @@
-<div class="container">
-  <h2>Lista de Socios</h2>
-  
-  <table border="1" style="width: 100%; border-collapse: collapse;">
-    <thead>
-      <tr style="background-color: #f2f2f2;">
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Cédula</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (socio of listaSocios; track socio.id) {
-        <tr>
-          <td>{{ socio.id }}</td>
-          <td>{{ socio.nombre }}</td>
-          <td>{{ socio.cedula }}</td>
-          <td>{{ socio.email }}</td>
-        </tr>
-      } @empty {
-        <tr>
-        </tr>
-      }
-    </tbody>
-  </table>
+<div class="container py-4">
+  <div class="row mb-4 align-items-center">
+    <div class="col">
+      <h2 class="fw-bold" style="color: var(--turq-dark);">
+        <i class="bi bi-people-fill me-2"></i>Gestión de Socios
+      </h2>
+      <p class="text-muted">Administra la información de los miembros del gimnasio.</p>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-action shadow-sm">
+        <i class="bi bi-person-plus-fill me-2"></i>Nuevo Socio
+      </button>
+    </div>
+  </div>
+
+  <div class="card card-dashboard border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
+            <tr>
+              <th class="px-4 py-3">ID</th>
+              <th class="py-3">Nombre</th>
+              <th class="py-3">Cédula</th>
+              <th class="py-3">Teléfono</th>
+              <th class="py-3">Email</th>
+              <th class="py-3 text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (socio of listaSocios; track socio.id) {
+            <tr>
+              <td class="px-4 py-3 fw-bold">{{ socio.id }}</td>
+              <td class="py-3 text-uppercase">{{ socio.nombre }}</td>
+              <td class="py-3">{{ socio.cedula }}</td>
+              <td class="py-3">{{ socio.telefono || 'N/A' }}</td>
+              <td class="py-3">{{ socio.email }}</td>
+              <td class="py-3 text-center">
+                <button class="btn btn-sm btn-outline-primary border-0 me-2">
+                  <i class="bi bi-pencil-square fs-5"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger border-0">
+                  <i class="bi bi-trash3 fs-5"></i>
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="bi bi-info-circle me-2"></i>No hay socios registrados actualmente.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

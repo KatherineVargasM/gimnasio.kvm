@@ -7,11 +7,15 @@ import { Observable } from 'rxjs';
 })
 export class GimnasioService {
   
-  private url = 'http://localhost/gimnasio/backend';
+  private url = 'http://localhost/gimnasio/backend/controllers';
 
   constructor(private http: HttpClient) { }
 
   obtenerSocios(): Observable<any> {
-    return this.http.get(`${this.url}/socios.php`);
+    return this.http.get(`${this.url}/socios.controllers.php`);
+  }
+
+  obtenerClases(): Observable<any> {
+    return this.http.get(`${this.url}/clase.controllers.php`);
   }
 }

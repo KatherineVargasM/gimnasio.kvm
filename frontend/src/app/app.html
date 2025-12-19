@@ -1,5 +1,31 @@
-<div style="padding: 20px;">
-  <h1>Sistema Gimnasio</h1>
-  <hr>
-  <router-outlet></router-outlet>
-</div>
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" routerLink="/">
+            <i class="bi bi-gym me-2"></i> Gimnasio KVM
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/socios" routerLinkActive="active">Socios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/clases" routerLinkActive="active">Clases</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/membresias" routerLinkActive="active">Membresías</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/pagos" routerLinkActive="active">Pagos</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<router-outlet></router-outlet>
