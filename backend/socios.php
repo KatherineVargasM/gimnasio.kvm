@@ -5,6 +5,10 @@ header("Access-Control-Allow-Methods: GET,POST");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 require 'conexion.php';
 
 $metodo = $_SERVER['REQUEST_METHOD'];
@@ -14,13 +18,17 @@ switch($metodo) {
         $sql = "SELECT * FROM socios";
         $resultado = $conexion->query($sql);
         
-        $socios = [];
-        if ($resultado->num_rows > 0) {
-            while($fila = $resultado->fetch_assoc()) {
-                $socios[] = $fila;
+        if ($resultado) {
+            $socios = [];
+            if ($resultado->num_rows > 0) {
+                while($fila = $resultado->fetch_assoc()) {
+                    $socios[] = $fila;
+                }
             }
+            echo json_encode($socios);
+        } else {
+            echo json_encode(["error" => "Error en la consulta: " . $conexion->error]);
         }
-        echo json_encode($socios);
         break;
 
     case 'POST':
@@ -29,8 +37,8 @@ switch($metodo) {
         if(isset($data->nombre) && isset($data->cedula)) {
             $nombre = $data->nombre;
             $cedula = $data->cedula;
-            $telefono = $data->telefono;
-            $email = $data->email;
+            $telefono = isset($data->telefono) ? $data->telefono : '';
+            $email = isset($data->email) ? $data->email : '';
 
             $sql = "INSERT INTO socios (nombre, cedula, telefono, email) VALUES ('$nombre', '$cedula', '$telefono', '$email')";
             
@@ -46,4 +54,3 @@ switch($metodo) {
 }
 
 $conexion->close();
-?>

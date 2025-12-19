@@ -11,12 +11,17 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let socio of listaSocios">
-        <td>{{ socio.id }}</td>
-        <td>{{ socio.nombre }}</td>
-        <td>{{ socio.cedula }}</td>
-        <td>{{ socio.email }}</td>
-      </tr>
+      @for (socio of listaSocios; track socio.id) {
+        <tr>
+          <td>{{ socio.id }}</td>
+          <td>{{ socio.nombre }}</td>
+          <td>{{ socio.cedula }}</td>
+          <td>{{ socio.email }}</td>
+        </tr>
+      } @empty {
+        <tr>
+        </tr>
+      }
     </tbody>
   </table>
 </div>
