@@ -6,15 +6,15 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../config/conexion.php';
-require_once '../models/socios.models.php';
+require_once '../models/membresia.models.php';
 
-$socio = new Socio($conexion);
+$membresia = new Membresia($conexion);
 
 $metodo = $_SERVER['REQUEST_METHOD'];
 
 switch($metodo) {
     case 'GET':
-        $datos = $socio->obtenerSocios();
+        $datos = $membresia->obtenerMembresias();
         ob_clean();
         echo json_encode($datos);
         break;
@@ -22,15 +22,12 @@ switch($metodo) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
         
-        if(isset($data->nombre) && isset($data->cedula)) {
-            $telefono = isset($data->telefono) ? $data->telefono : '';
-            $email = isset($data->email) ? $data->email : '';
-
-            $respuesta = $socio->registrarSocio($data->nombre, $data->cedula, $telefono, $email);
+        if(isset($data->nombre) && isset($data->duracion_dias) && isset($data->precio)) {
+            $respuesta = $membresia->registrarMembresia($data->nombre, $data->duracion_dias, $data->precio);
             
             ob_clean();
             if ($respuesta === true) {
-                echo json_encode(["mensaje" => "Socio registrado con exito"]);
+                echo json_encode(["mensaje" => "Membresía registrada con éxito"]);
             } else {
                 echo json_encode(["mensaje" => "Error: " . $respuesta]);
             }

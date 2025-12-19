@@ -18,4 +18,16 @@ export class GimnasioService {
   obtenerClases(): Observable<any> {
     return this.http.get(`${this.url}/clase.controllers.php`);
   }
+
+  obtenerMembresias(): Observable<any> {
+    return this.http.get(`${this.url}/membresia.controllers.php`);
+  }
+
+  obtenerPagos(): Observable<any> {
+    return this.http.get(`${this.url}/pago.controllers.php`);
+  }
+
+  eliminarPago(id: number): Observable<any> {
+    return this.http.delete(`${this.url}/pago.controllers.php?id=${id}`);
+  }
 }

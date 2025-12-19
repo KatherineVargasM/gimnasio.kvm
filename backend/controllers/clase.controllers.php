@@ -14,7 +14,9 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 
 switch($metodo) {
     case 'GET':
-        echo json_encode($clase->obtenerClases());
+        $datos = $clase->obtenerClases();
+        ob_clean();
+        echo json_encode($datos);
         break;
 
     case 'POST':
@@ -25,12 +27,14 @@ switch($metodo) {
             
             $respuesta = $clase->registrarClase($data->nombre, $data->horario, $instructor);
             
+            ob_clean();
             if ($respuesta === true) {
                 echo json_encode(["mensaje" => "Clase registrada con exito"]);
             } else {
                 echo json_encode(["mensaje" => "Error: " . $respuesta]);
             }
         } else {
+            ob_clean();
             echo json_encode(["mensaje" => "Faltan datos obligatorios"]);
         }
         break;

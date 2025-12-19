@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GimnasioService } from '../../services/gimnasio';
 
@@ -13,7 +13,10 @@ export class SociosComponent implements OnInit {
   
   listaSocios: any[] = [];
 
-  constructor(private gimnasioService: GimnasioService) {}
+  constructor(
+    private gimnasioService: GimnasioService,
+    private cd: ChangeDetectorRef 
+  ) {}
 
   ngOnInit(): void {
     this.obtenerSocios();
@@ -33,6 +36,8 @@ export class SociosComponent implements OnInit {
         }
 
         this.listaSocios = Array.isArray(respuesta) ? respuesta : [];
+        
+        this.cd.detectChanges();
       },
       error: (e) => {
         console.error('Error de conexion:', e);

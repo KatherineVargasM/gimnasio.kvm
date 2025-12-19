@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GimnasioService } from '../../services/gimnasio';
 
@@ -6,14 +6,16 @@ import { GimnasioService } from '../../services/gimnasio';
   selector: 'app-clases',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './clases.html'
+  templateUrl: './clases.html',
+  styleUrl: './clases.css'
 })
 export class ClasesComponent implements OnInit {
   
   listaClases: any[] = [];
 
   constructor(
-    private gimnasioService: GimnasioService
+    private gimnasioService: GimnasioService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -23,15 +25,19 @@ export class ClasesComponent implements OnInit {
   obtenerClases() {
     this.gimnasioService.obtenerClases().subscribe({
       next: (datos: any) => {
+        let respuesta = datos;
         if (typeof datos === 'string') {
            try {
-             datos = JSON.parse(datos); 
+             respuesta = JSON.parse(datos); 
            } catch (e) {
+             console.error("Error al parsear clases:", e);
            }
         }
-        this.listaClases = datos;
+        this.listaClases = Array.isArray(respuesta) ? respuesta : [];
+        this.cd.detectChanges();
       },
       error: (e) => {
+        console.error('Error de conexion en clases:', e);
       }
     });
   }

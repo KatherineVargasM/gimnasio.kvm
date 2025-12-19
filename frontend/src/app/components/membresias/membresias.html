@@ -2,13 +2,13 @@
   <div class="row mb-4 align-items-center">
     <div class="col">
       <h2 class="fw-bold" style="color: var(--turq-dark);">
-        <i class="bi bi-calendar-event-fill me-2"></i>Gestión de Clases
+        <i class="bi bi-card-checklist me-2"></i>Gestión de Membresías
       </h2>
-      <p class="text-muted">Administra los horarios e instructores de las actividades.</p>
+      <p class="text-muted">Configura los planes y precios para los socios.</p>
     </div>
     <div class="col-auto">
       <button class="btn btn-action shadow-sm">
-        <i class="bi bi-plus-circle-fill me-2"></i>Nueva Clase
+        <i class="bi bi-plus-square-fill me-2"></i>Nueva Membresía
       </button>
     </div>
   </div>
@@ -20,19 +20,19 @@
           <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
             <tr>
               <th class="px-4 py-3">ID</th>
-              <th class="py-3">Nombre de la Clase</th>
-              <th class="py-3">Horario</th>
-              <th class="py-3">Instructor</th>
+              <th class="py-3">Plan</th>
+              <th class="py-3">Duración (Días)</th>
+              <th class="py-3">Precio</th>
               <th class="py-3 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            @for (clase of listaClases; track clase.id) {
+            @for (item of listaMembresias; track item.id) {
             <tr>
-              <td class="px-4 py-3 fw-bold">{{ clase.id }}</td>
-              <td class="py-3 text-uppercase">{{ clase.nombre }}</td>
-              <td class="py-3">{{ clase.horario }}</td>
-              <td class="py-3">{{ clase.instructor || 'Por asignar' }}</td>
+              <td class="px-4 py-3 fw-bold">{{ item.id }}</td>
+              <td class="py-3 text-uppercase fw-semibold">{{ item.nombre }}</td>
+              <td class="py-3">{{ item.duracion }}</td>
+              <td class="py-3 text-success fw-bold">${{ item.precio }}</td>
               <td class="py-3 text-center">
                 <button class="btn btn-sm btn-outline-primary border-0 me-2">
                   <i class="bi bi-pencil-square fs-5"></i>
@@ -45,7 +45,7 @@
             } @empty {
             <tr>
               <td colspan="5" class="text-center py-5 text-muted">
-                <i class="bi bi-info-circle me-2"></i>No hay clases programadas actualmente.
+                <i class="bi bi-info-circle me-2"></i>No hay planes de membresía configurados.
               </td>
             </tr>
             }
