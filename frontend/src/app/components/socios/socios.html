@@ -1,0 +1,22 @@
+<div class="container">
+  <h2>Lista de Socios</h2>
+  
+  <table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let socio of listaSocios">
+        <td>{{ socio.id }}</td>
+        <td>{{ socio.nombre }}</td>
+        <td>{{ socio.cedula }}</td>
+        <td>{{ socio.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
