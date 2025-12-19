@@ -4,55 +4,81 @@
       <h2 class="fw-bold" style="color: var(--turq-dark);">
         <i class="bi bi-people-fill me-2"></i>Gestión de Socios
       </h2>
-      <p class="text-muted">Administra la información de los miembros del gimnasio.</p>
     </div>
     <div class="col-auto">
-      <button class="btn btn-action shadow-sm">
+      <button class="btn btn-primary" (click)="nuevo()" style="background-color: var(--turq-primary); border:none;">
         <i class="bi bi-person-plus-fill me-2"></i>Nuevo Socio
       </button>
     </div>
   </div>
 
-  <div class="card card-dashboard border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="py-3">Nombre</th>
-              <th class="py-3">Cédula</th>
-              <th class="py-3">Teléfono</th>
-              <th class="py-3">Email</th>
-              <th class="py-3 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (socio of listaSocios; track socio.id) {
-            <tr>
-              <td class="px-4 py-3 fw-bold">{{ socio.id }}</td>
-              <td class="py-3 text-uppercase">{{ socio.nombre }}</td>
-              <td class="py-3">{{ socio.cedula }}</td>
-              <td class="py-3">{{ socio.telefono || 'N/A' }}</td>
-              <td class="py-3">{{ socio.email }}</td>
-              <td class="py-3 text-center">
-                <button class="btn btn-sm btn-outline-primary border-0 me-2">
-                  <i class="bi bi-pencil-square fs-5"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger border-0">
-                  <i class="bi bi-trash3 fs-5"></i>
-                </button>
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="6" class="text-center py-5 text-muted">
-                <i class="bi bi-info-circle me-2"></i>No hay socios registrados actualmente.
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
+          <tr>
+            <th class="px-4">ID</th>
+            <th>Nombre</th>
+            <th>Cédula</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of listaSocios; track item.id) {
+          <tr>
+            <td class="px-4 fw-bold">{{ item.id }}</td>
+            <td class="text-uppercase">{{ item.nombre }}</td>
+            <td>{{ item.cedula }}</td>
+            <td>{{ item.telefono || 'N/A' }}</td>
+            <td>{{ item.email }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-warning border-0 me-2" (click)="editar(item.id)">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger border-0" (click)="eliminar(item.id)">
+                <i class="bi bi-trash3 fs-5"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalSocio" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Datos del Socio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="socio.nombre" name="nombre" placeholder="N">
+            <label>Nombre Completo</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="socio.cedula" name="cedula" placeholder="C">
+            <label>Cédula</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="socio.telefono" name="telefono" placeholder="T">
+            <label>Teléfono</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" [(ngModel)]="socio.email" name="email" placeholder="E">
+            <label>Email</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" style="background-color: var(--turq-primary); border:none;">Guardar</button>
       </div>
     </div>
   </div>

@@ -12,7 +12,27 @@ export class GimnasioService {
   constructor(private http: HttpClient) { }
 
   obtenerSocios(): Observable<any> {
-    return this.http.get(`${this.url}/socios.controllers.php`);
+    return this.http.get(`${this.url}/socios.controllers.php?op=todos`);
+  }
+
+  obtenerSocio(id: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.post(`${this.url}/socios.controllers.php?op=uno`, formData);
+  }
+
+  insertarSocio(socio: any): Observable<any> {
+    return this.http.post(`${this.url}/socios.controllers.php?op=insertar`, socio);
+  }
+
+  actualizarSocio(socio: any): Observable<any> {
+    return this.http.post(`${this.url}/socios.controllers.php?op=actualizar`, socio);
+  }
+
+  eliminarSocio(id: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.post(`${this.url}/socios.controllers.php?op=eliminar`, formData);
   }
 
   obtenerClases(): Observable<any> {

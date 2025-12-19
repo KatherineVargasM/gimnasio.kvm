@@ -1,43 +1,48 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: access");
-header("Access-Control-Allow-Methods: GET,POST");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../config/conexion.php';
 require_once '../models/socios.models.php';
 
 $socio = new Socio($conexion);
+$op = isset($_GET["op"]) ? $_GET["op"] : '';
 
-$metodo = $_SERVER['REQUEST_METHOD'];
-
-switch($metodo) {
-    case 'GET':
-        $datos = $socio->obtenerSocios();
-        ob_clean();
-        echo json_encode($datos);
+switch ($op) {
+    case 'todos':
+        echo json_encode($socio->obtenerSocios());
         break;
 
-    case 'POST':
-        $data = json_decode(file_get_contents("php://input"));
-        
-        if(isset($data->nombre) && isset($data->cedula)) {
-            $telefono = isset($data->telefono) ? $data->telefono : '';
-            $email = isset($data->email) ? $data->email : '';
+    case 'uno':
+        $id = isset($_POST["id"]) ? $_POST["id"] : (json_decode(file_get_contents("php://input"))->id ?? 0);
+        echo json_encode($socio->uno($id));
+        break;
 
-            $respuesta = $socio->registrarSocio($data->nombre, $data->cedula, $telefono, $email);
-            
+    case 'insertar':
+        $data = json_decode(file_get_contents("php://input"));
+        if ($data) {
+            $res = $socio->registrarSocio($data->nombre, $data->cedula, $data->telefono, $data->email);
             ob_clean();
-            if ($respuesta === true) {
-                echo json_encode(["mensaje" => "Socio registrado con exito"]);
-            } else {
-                echo json_encode(["mensaje" => "Error: " . $respuesta]);
-            }
-        } else {
-            ob_clean();
-            echo json_encode(["mensaje" => "Faltan datos obligatorios"]);
+            echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Socio registrado"] : ["status" => "error", "mensaje" => $res]);
         }
+        break;
+
+    case 'actualizar':
+        $data = json_decode(file_get_contents("php://input"));
+        if ($data) {
+            $res = $socio->actualizarSocio($data->id, $data->nombre, $data->cedula, $data->telefono, $data->email);
+            ob_clean();
+            echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Socio actualizado"] : ["status" => "error", "mensaje" => $res]);
+        }
+        break;
+
+    case 'eliminar':
+        $id = isset($_POST["id"]) ? $_POST["id"] : (json_decode(file_get_contents("php://input"))->id ?? 0);
+        $res = $socio->eliminarSocio($id);
+        ob_clean();
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Socio eliminado"] : ["status" => "error", "mensaje" => $res]);
         break;
 }
 $conexion->close();
