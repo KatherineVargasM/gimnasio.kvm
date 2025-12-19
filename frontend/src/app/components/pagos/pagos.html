@@ -4,57 +4,114 @@
       <h2 class="fw-bold" style="color: var(--turq-dark);">
         <i class="bi bi-cash-stack me-2"></i>Historial de Pagos
       </h2>
-      <p class="text-muted">Visualiza y gestiona las transacciones de los socios.</p>
     </div>
     <div class="col-auto">
-      <button class="btn btn-action shadow-sm">
-        <i class="bi bi-plus-circle-fill me-2"></i>Registrar Pago
+      <button class="btn btn-primary" (click)="nuevo()" style="background-color: var(--turq-primary); border:none;">
+        <i class="bi bi-plus-circle me-2"></i>Registrar Pago
       </button>
     </div>
   </div>
 
-  <div class="card card-dashboard border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="py-3">Socio</th>
-              <th class="py-3">Membresía</th>
-              <th class="py-3">Monto</th>
-              <th class="py-3">Vigencia</th>
-              <th class="py-3 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pago of listaPagos; track pago.id) {
-            <tr>
-              <td class="px-4 py-3 fw-bold">{{ pago.id }}</td>
-              <td class="py-3 text-uppercase">{{ pago.socio_nombre }}</td>
-              <td class="py-3"><span class="badge bg-light text-dark border">{{ pago.membresia_nombre }}</span></td>
-              <td class="py-3 fw-bold text-success">${{ pago.monto }}</td>
-              <td class="py-3 small">
-                {{ pago.fecha_inicio }} al {{ pago.fecha_fin }}
-              </td>
-              <td class="py-3 text-center">
-                <button class="btn btn-sm btn-outline-primary border-0 me-2">
-                  <i class="bi bi-pencil-square fs-5"></i>
-                </button>
-                <button (click)="eliminarPago(pago.id)" class="btn btn-sm btn-outline-danger border-0">
-                  <i class="bi bi-trash3 fs-5"></i>
-                </button>
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="6" class="text-center py-5 text-muted">
-                <i class="bi bi-info-circle me-2"></i>No hay pagos registrados.
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" class="form-control border-start-0" [(ngModel)]="filtro" placeholder="Buscar por socio o membresía...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
+          <tr>
+            <th class="px-4">ID</th>
+            <th>Socio</th>
+            <th>Membresía</th>
+            <th>Monto</th>
+            <th>Vigencia</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filtrar(); track item.id) {
+          <tr>
+            <td class="px-4 fw-bold">{{ item.id }}</td>
+            <td class="text-uppercase">{{ item.socio_nombre }}</td>
+            <td><span class="badge bg-light text-dark border">{{ item.membresia_nombre }}</span></td>
+            <td class="fw-bold text-success">${{ item.monto }}</td>
+            <td class="small">{{ item.fecha_inicio }} al {{ item.fecha_fin }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-warning border-0 me-2" (click)="editar(item.id)">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger border-0" (click)="eliminar(item.id)">
+                <i class="bi bi-trash3 fs-5"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalPago" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Registro de Pago</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Socio</label>
+            <select class="form-select" [(ngModel)]="pago.socio_id" name="socio_id">
+              <option value="0" disabled>Seleccionar Socio</option>
+              @for (s of listaSocios; track s.id) {
+                <option [value]="s.id">{{ s.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Membresía</label>
+            <select class="form-select" [(ngModel)]="pago.membresia_id" name="membresia_id">
+              <option value="0" disabled>Seleccionar Membresía</option>
+              @for (m of listaMembresias; track m.id) {
+                <option [value]="m.id">{{ m.nombre }} - ${{ m.precio }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" [(ngModel)]="pago.monto" name="monto" placeholder="M">
+            <label>Monto Pagado ($)</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control" [(ngModel)]="pago.fecha_pago" name="fecha_pago">
+            <label>Fecha de Pago</label>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input type="date" class="form-control" [(ngModel)]="pago.fecha_inicio" name="fecha_inicio">
+                <label>Inicio</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input type="date" class="form-control" [(ngModel)]="pago.fecha_fin" name="fecha_fin">
+                <label>Fin</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" style="background-color: var(--turq-primary); border:none;">Guardar</button>
       </div>
     </div>
   </div>

@@ -7,30 +7,41 @@ class Membresia {
     }
 
     public function obtenerMembresias() {
-        $sql = "SELECT * FROM membresias";
+        $sql = "SELECT * FROM membresias ORDER BY id ASC";
         $resultado = $this->conexion->query($sql);
-        
         $membresias = [];
-        if ($resultado && $resultado->num_rows > 0) {
-            while($fila = $resultado->fetch_assoc()) {
-                $membresias[] = $fila;
-            }
+        while ($fila = $resultado->fetch_assoc()) {
+            $membresias[] = $fila;
         }
         return $membresias;
     }
 
-    public function registrarMembresia($nombre, $duracion_dias, $precio) {
-        $sql = "INSERT INTO membresias (nombre, duracion_dias, precio) VALUES (?, ?, ?)";
+    public function uno($id) {
+        $sql = "SELECT * FROM membresias WHERE id = $id";
+        $resultado = $this->conexion->query($sql);
+        return $resultado->fetch_assoc();
+    }
+
+    public function registrarMembresia($nombre, $precio, $duracion_dias) {
+        $sql = "INSERT INTO membresias (nombre, precio, duracion_dias) VALUES (?, ?, ?)";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("sid", $nombre, $duracion_dias, $precio);
-        
-        if ($stmt->execute()) {
-            $resultado = true;
-        } else {
-            $resultado = $this->conexion->error;
-        }
+        $stmt->bind_param("sdi", $nombre, $precio, $duracion_dias);
+        $res = $stmt->execute() ? true : $this->conexion->error;
         $stmt->close();
-        
-        return $resultado;
+        return $res;
+    }
+
+    public function actualizarMembresia($id, $nombre, $precio, $duracion_dias) {
+        $sql = "UPDATE membresias SET nombre=?, precio=?, duracion_dias=? WHERE id=?";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bind_param("sdii", $nombre, $precio, $duracion_dias, $id);
+        $res = $stmt->execute() ? true : $this->conexion->error;
+        $stmt->close();
+        return $res;
+    }
+
+    public function eliminarMembresia($id) {
+        $sql = "DELETE FROM membresias WHERE id = $id";
+        return $this->conexion->query($sql) ? true : $this->conexion->error;
     }
 }

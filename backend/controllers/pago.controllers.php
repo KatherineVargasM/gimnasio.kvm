@@ -1,38 +1,37 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: access");
-header("Access-Control-Allow-Methods: GET,POST,DELETE");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../config/conexion.php';
 require_once '../models/pago.models.php';
 
 $pago = new Pago($conexion);
-$metodo = $_SERVER['REQUEST_METHOD'];
+$op = isset($_GET["op"]) ? $_GET["op"] : '';
 
-switch($metodo) {
-    case 'GET':
-        $datos = $pago->obtenerPagos();
-        ob_clean();
-        echo json_encode($datos);
+switch ($op) {
+    case 'todos':
+        echo json_encode($pago->obtenerPagos());
         break;
-
-    case 'POST':
+    case 'uno':
+        $id = $_POST["id"];
+        echo json_encode($pago->uno($id));
+        break;
+    case 'insertar':
         $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->socio_id) && isset($data->monto)) {
-            $respuesta = $pago->registrarPago($data->socio_id, $data->membresia_id, $data->monto, $data->fecha_pago, $data->fecha_inicio, $data->fecha_fin);
-            ob_clean();
-            echo json_encode(["mensaje" => $respuesta === true ? "Exito" : "Error"]);
-        }
+        $res = $pago->registrarPago($data->socio_id, $data->membresia_id, $data->monto, $data->fecha_pago, $data->fecha_inicio, $data->fecha_fin);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Pago registrado"] : ["status" => "error", "mensaje" => $res]);
         break;
-
-    case 'DELETE':
-        if(isset($_GET['id'])) {
-            $respuesta = $pago->eliminarPago($_GET['id']);
-            ob_clean();
-            echo json_encode(["mensaje" => $respuesta ? "Eliminado" : "Error"]);
-        }
+    case 'actualizar':
+        $data = json_decode(file_get_contents("php://input"));
+        $res = $pago->actualizarPago($data->id, $data->socio_id, $data->membresia_id, $data->monto, $data->fecha_pago, $data->fecha_inicio, $data->fecha_fin);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Pago actualizado"] : ["status" => "error", "mensaje" => $res]);
+        break;
+    case 'eliminar':
+        $id = $_POST["id"];
+        $res = $pago->eliminarPago($id);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Pago eliminado"] : ["status" => "error", "mensaje" => $res]);
         break;
 }
 $conexion->close();

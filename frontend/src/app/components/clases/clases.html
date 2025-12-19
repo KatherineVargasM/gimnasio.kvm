@@ -2,55 +2,86 @@
   <div class="row mb-4 align-items-center">
     <div class="col">
       <h2 class="fw-bold" style="color: var(--turq-dark);">
-        <i class="bi bi-calendar-event-fill me-2"></i>Gestión de Clases
+        <i class="bi bi-calendar3 me-2"></i>Gestión de Clases
       </h2>
-      <p class="text-muted">Administra los horarios e instructores de las actividades.</p>
     </div>
     <div class="col-auto">
-      <button class="btn btn-action shadow-sm">
-        <i class="bi bi-plus-circle-fill me-2"></i>Nueva Clase
+      <button class="btn btn-primary" (click)="nuevo()" style="background-color: var(--turq-primary); border:none;">
+        <i class="bi bi-plus-circle me-2"></i>Nueva Clase
       </button>
     </div>
   </div>
 
-  <div class="card card-dashboard border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="py-3">Nombre de la Clase</th>
-              <th class="py-3">Horario</th>
-              <th class="py-3">Instructor</th>
-              <th class="py-3 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (clase of listaClases; track clase.id) {
-            <tr>
-              <td class="px-4 py-3 fw-bold">{{ clase.id }}</td>
-              <td class="py-3 text-uppercase">{{ clase.nombre }}</td>
-              <td class="py-3">{{ clase.horario }}</td>
-              <td class="py-3">{{ clase.instructor || 'Por asignar' }}</td>
-              <td class="py-3 text-center">
-                <button class="btn btn-sm btn-outline-primary border-0 me-2">
-                  <i class="bi bi-pencil-square fs-5"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger border-0">
-                  <i class="bi bi-trash3 fs-5"></i>
-                </button>
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="5" class="text-center py-5 text-muted">
-                <i class="bi bi-info-circle me-2"></i>No hay clases programadas actualmente.
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" class="form-control border-start-0" [(ngModel)]="filtro" placeholder="Buscar clase o instructor...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
+          <tr>
+            <th class="px-4">ID</th>
+            <th>Clase</th>
+            <th>Instructor</th>
+            <th>Horario</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filtrar(); track item.id) {
+          <tr>
+            <td class="px-4 fw-bold">{{ item.id }}</td>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.instructor }}</td>
+            <td>{{ item.horario }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-warning border-0 me-2" (click)="editar(item.id)">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger border-0" (click)="eliminar(item.id)">
+                <i class="bi bi-trash3 fs-5"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalClase" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Clase</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="clase.nombre" name="nombre" placeholder="N">
+            <label>Nombre de la Clase</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="clase.instructor" name="instructor" placeholder="I">
+            <label>Instructor</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="clase.horario" name="horario" placeholder="H">
+            <label>Horario</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" style="background-color: var(--turq-primary); border:none;">Guardar</button>
       </div>
     </div>
   </div>

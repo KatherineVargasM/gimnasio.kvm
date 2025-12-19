@@ -1,40 +1,37 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: access");
-header("Access-Control-Allow-Methods: GET,POST");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 require_once '../config/conexion.php';
 require_once '../models/membresia.models.php';
 
 $membresia = new Membresia($conexion);
+$op = isset($_GET["op"]) ? $_GET["op"] : '';
 
-$metodo = $_SERVER['REQUEST_METHOD'];
-
-switch($metodo) {
-    case 'GET':
-        $datos = $membresia->obtenerMembresias();
-        ob_clean();
-        echo json_encode($datos);
+switch ($op) {
+    case 'todos':
+        echo json_encode($membresia->obtenerMembresias());
         break;
-
-    case 'POST':
+    case 'uno':
+        $id = $_POST["id"];
+        echo json_encode($membresia->uno($id));
+        break;
+    case 'insertar':
         $data = json_decode(file_get_contents("php://input"));
-        
-        if(isset($data->nombre) && isset($data->duracion_dias) && isset($data->precio)) {
-            $respuesta = $membresia->registrarMembresia($data->nombre, $data->duracion_dias, $data->precio);
-            
-            ob_clean();
-            if ($respuesta === true) {
-                echo json_encode(["mensaje" => "Membresía registrada con éxito"]);
-            } else {
-                echo json_encode(["mensaje" => "Error: " . $respuesta]);
-            }
-        } else {
-            ob_clean();
-            echo json_encode(["mensaje" => "Faltan datos obligatorios"]);
-        }
+        $res = $membresia->registrarMembresia($data->nombre, $data->precio, $data->duracion_dias);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Membresia registrada"] : ["status" => "error", "mensaje" => $res]);
+        break;
+    case 'actualizar':
+        $data = json_decode(file_get_contents("php://input"));
+        $res = $membresia->actualizarMembresia($data->id, $data->nombre, $data->precio, $data->duracion_dias);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Membresia actualizada"] : ["status" => "error", "mensaje" => $res]);
+        break;
+    case 'eliminar':
+        $id = $_POST["id"];
+        $res = $membresia->eliminarMembresia($id);
+        echo json_encode($res === true ? ["status" => "ok", "mensaje" => "Membresia eliminada"] : ["status" => "error", "mensaje" => $res]);
         break;
 }
 $conexion->close();

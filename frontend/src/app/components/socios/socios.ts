@@ -15,6 +15,7 @@ declare var bootstrap: any;
 })
 export class SociosComponent implements OnInit {
   listaSocios: any[] = [];
+  filtro: string = '';
   socio = { id: 0, nombre: '', cedula: '', telefono: '', email: '' };
 
   constructor(private service: GimnasioService, private cd: ChangeDetectorRef) {}
@@ -28,6 +29,14 @@ export class SociosComponent implements OnInit {
       this.listaSocios = res;
       this.cd.detectChanges();
     });
+  }
+
+  filtrarSocios() {
+    if (!this.filtro) return this.listaSocios;
+    return this.listaSocios.filter(s => 
+      s.nombre.toLowerCase().includes(this.filtro.toLowerCase()) || 
+      s.cedula.includes(this.filtro)
+    );
   }
 
   nuevo() {
@@ -67,7 +76,6 @@ export class SociosComponent implements OnInit {
       },
       error: (err: any) => {
         this.notificar('Error de red o servidor', 'error');
-        console.error(err);
       }
     });
   }
@@ -77,6 +85,8 @@ export class SociosComponent implements OnInit {
       title: '¿Eliminar socio?',
       icon: 'warning',
       showCancelButton: true,
+      confirmButtonColor: '#004d4d',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result: any) => {
@@ -96,6 +106,11 @@ export class SociosComponent implements OnInit {
   }
 
   notificar(msj: string, icono: any) {
-    Swal.fire({ icon: icono, title: msj, timer: 1500, showConfirmButton: false });
+    Swal.fire({ 
+      icon: icono, 
+      title: msj, 
+      timer: 1500, 
+      showConfirmButton: false 
+    });
   }
 }

@@ -4,53 +4,84 @@
       <h2 class="fw-bold" style="color: var(--turq-dark);">
         <i class="bi bi-card-checklist me-2"></i>Gestión de Membresías
       </h2>
-      <p class="text-muted">Configura los planes y precios para los socios.</p>
     </div>
     <div class="col-auto">
-      <button class="btn btn-action shadow-sm">
-        <i class="bi bi-plus-square-fill me-2"></i>Nueva Membresía
+      <button class="btn btn-primary" (click)="nuevo()" style="background-color: var(--turq-primary); border:none;">
+        <i class="bi bi-plus-circle me-2"></i>Nueva Membresía
       </button>
     </div>
   </div>
 
-  <div class="card card-dashboard border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="py-3">Plan</th>
-              <th class="py-3">Duración (Días)</th>
-              <th class="py-3">Precio</th>
-              <th class="py-3 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of listaMembresias; track item.id) {
-            <tr>
-              <td class="px-4 py-3 fw-bold">{{ item.id }}</td>
-              <td class="py-3 text-uppercase fw-semibold">{{ item.nombre }}</td>
-              <td class="py-3">{{ item.duracion }}</td>
-              <td class="py-3 text-success fw-bold">${{ item.precio }}</td>
-              <td class="py-3 text-center">
-                <button class="btn btn-sm btn-outline-primary border-0 me-2">
-                  <i class="bi bi-pencil-square fs-5"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger border-0">
-                  <i class="bi bi-trash3 fs-5"></i>
-                </button>
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="5" class="text-center py-5 text-muted">
-                <i class="bi bi-info-circle me-2"></i>No hay planes de membresía configurados.
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" class="form-control border-start-0" [(ngModel)]="filtro" placeholder="Buscar membresía...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead style="background-color: var(--turq-bg); color: var(--turq-dark);">
+          <tr>
+            <th class="px-4">ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Duración (Días)</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filtrar(); track item.id) {
+          <tr>
+            <td class="px-4 fw-bold">{{ item.id }}</td>
+            <td class="text-uppercase">{{ item.nombre }}</td>
+            <td>${{ item.precio }}</td>
+            <td>{{ item.duracion_dias }} días</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-warning border-0 me-2" (click)="editar(item.id)">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger border-0" (click)="eliminar(item.id)">
+                <i class="bi bi-trash3 fs-5"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ModalMembresia" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Membresía</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="membresia.nombre" name="nombre" placeholder="N">
+            <label>Nombre de la Membresía</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" [(ngModel)]="membresia.precio" name="precio" placeholder="P">
+            <label>Precio ($)</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" [(ngModel)]="membresia.duracion_dias" name="duracion_dias" placeholder="D">
+            <label>Duración (en días)</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" style="background-color: var(--turq-primary); border:none;">Guardar</button>
       </div>
     </div>
   </div>
